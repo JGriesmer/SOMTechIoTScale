@@ -1,11 +1,11 @@
+#include "WeightFunctions.h"
 #define DTin 17 //Data pin  for weight sensor
 #define SCKout 19 //clock pin for weight sensor
-long weight = 0;
+double weight = 0;
+
 void setup() {
   Serial.begin(115200);
-
-  initWeight(DTin,SCKout);
-  
+  initWeight(DTin, SCKout);
   delay(1000);
 
 }
@@ -13,12 +13,11 @@ void setup() {
 void loop() {
 
   if (digitalRead(DTin) == 0) {
-   Serial.println("The weight is: ");
-   weight = readWeight(DTin,SCKout);
-   Serial.println(weight);
-   delay(1000);
+    
+    weight = readWeight(DTin, SCKout);
+    Serial.print("The weight is: ");
+    Serial.println(weight);
+    Serial.println(digitalRead(DTin));
+    delay(1000);
   }
 }
-
-
-
