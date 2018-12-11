@@ -1,4 +1,5 @@
-double tare = 1.45
+float tare = 0; //value used to zero the scale, a global value so it can be modified easily
+
 //function to be run in setup to initialze the weight reading of the scale
 void initWeight(int dataIn, int clk) {
 
@@ -13,8 +14,8 @@ void initWeight(int dataIn, int clk) {
 
 //function to read the weight, had to bit bang, shiftIn did not function properly and would drop bits of the end
 //modifies the value that is input at value
-double readWeight(int dataIn, int clk) {
-  double kg;
+float readWeight(int dataIn, int clk) {
+  float kg;
   long value;
   uint8_t filler = B11111111;
   //decrementing loop becuase the device shifts in the most signifigant bit first
@@ -36,17 +37,26 @@ double readWeight(int dataIn, int clk) {
   delayMicroseconds(30);
   digitalWrite(clk, LOW);
   //makes sure dt went back to 0
+  /*
   delay(1000); //debugging
   Serial.print("DT: ");
   Serial.println(digitalRead(dataIn));
+  */
   if (value && 0x800000) {
     value |= filler << 24;
   }
-
+/*
   Serial.print("The read value is: ");
   Serial.println(value);//debugging value before conversion
-
+*/
   //conversion code
   kg = ((value * (-.00005)) - (13.497)- (tare));
   return kg;
+}
+
+void tareScale(int dataIn, int clk){
+  delay(1000);
+  tare += readWeight(dataIn,clk);
+  Serial.print("The new modifier is: ");
+  Serial.println(tare);
 }
